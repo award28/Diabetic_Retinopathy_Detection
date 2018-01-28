@@ -18,20 +18,20 @@ class Nueron(object):
         return self.val
 
 
-    def set_next_layer(self, nuerons):
-        for nueron in nuerons:
+    def set_next_layer(self, neurons):
+        for neuron in neurons:
             weight = random.uniform(-0.05, 0.05)
-            self.next_layer[nueron] = weight
+            self.next_layer[neuron] = weight
 
 
     def get_next_layer(self):
         return self.next_layer
 
 
-    def set_prev_layer(self, nuerons):
-        for nueron in nuerons:
-            weight = nueron.get_next_layer()[self]
-            self.prev_layer[nueron] = weight
+    def set_prev_layer(self, neurons):
+        for neuron in neurons:
+            weight = neuron.get_next_layer()[self]
+            self.prev_layer[neuron] = weight
 
 
     def get_prev_layer(self):
@@ -41,7 +41,7 @@ class Nueron(object):
 
 def backpropagation(df, learning_rate, n_inputs, n_outputs, n_hidden, n_layers=2):
     layers = []
-    # Make nuerons for each layer
+    # Make neurons for each layer
     for i in range(4):
         layers.append([])
     
@@ -49,16 +49,16 @@ def backpropagation(df, learning_rate, n_inputs, n_outputs, n_hidden, n_layers=2
 
     for i, num in zip(range(len(nums)), nums):
         for j in range(num):
-            nueron = Nueron(0)
-            layers[i].append(nueron)
+            neuron = Nueron(0)
+            layers[i].append(neuron)
 
     for i in range(len(layers) - 1):
-        for nueron in layers[i]:
-            nueron.set_next_layer(layers[i + 1])
+        for neuron in layers[i]:
+            neuron.set_next_layer(layers[i + 1])
 
     for i in range(1,len(layers)):
-        for nueron in layers[i]:
-            nueron.set_prev_layer(layers[i - 1])
+        for neuron in layers[i]:
+            neuron.set_prev_layer(layers[i - 1])
 
 
 d = {
