@@ -25,14 +25,6 @@ class Nueron(object):
         return self.val
 
 
-    def set_target_val(self, val):
-        self.t_val = val
-
-
-    def get_target_val(self):
-        return self.t_val
-
-
     def set_next_layer(self, neurons):
         for neuron in neurons:
             weight = random.uniform(-0.05, 0.05)
@@ -80,9 +72,9 @@ def backpropagation(df, learning_rate, n_inputs, n_outputs, n_hidden, n_layers=2
     
     nums = [n_inputs, n_hidden, n_hidden, n_outputs]
 
-    print("---------------------File saved---------------------")
+    print("---------------------Creating Neuron Layers---------------------")
     for i, num in zip(range(len(nums)), nums):
-        for j in range(num):
+        for j in range(num): 
             neuron = Nueron(0)
             layers[i].append(neuron)
 
@@ -209,6 +201,7 @@ def predict(layers, df):
         print("Actual: " + str(row["dr"]))
         
 
+'''
 d = {
         1 : pd.Series([(255., 0., 50.), (0, 0, 255,), (20,20,20), (230, 5, 67)]),
         2 : pd.Series([(0,0,255), (0,3,4), (0,0,0), (23, 85, 6)]),
@@ -221,8 +214,8 @@ s["dr"] = [1,2,0]
 n_ins = s.columns.values[len(s.columns.values) - 2] + 1
 layers = backpropagation(s, 0.1, n_ins, 5, 10)
 predict(layers, s)
-
 '''
+
 try:
     with open('mypickle.pickle') as f:
         in_df = pickle.load(f)
@@ -254,8 +247,7 @@ except:
     s = pd.DataFrame(d)
     s = s.transpose()
     print("Drs here: " + str(drs))
-    [s["dr"].append
-    s["dr"] = drs
+    s.insert(15054336, 'drs', drs)
     
     try:
         with open('mypickle.pickle', 'wb') as f:
@@ -266,4 +258,3 @@ except:
 n_ins = s.columns.values[len(s.columns.values) - 2] + 1
 layers = backpropagation(s, 0.1, n_ins, 5, 10)
 predict(layers, s)
-'''
