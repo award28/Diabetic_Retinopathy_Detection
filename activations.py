@@ -6,23 +6,14 @@ def relu(pixel_vals, bias=0):
     For use within each individual node in a dense layer before being passed onto the next layer
     bias 0'ed out by default
     '''
-    a, b, c = pixel_vals
-    return (a * (a > 0) + bias,
-            b * (b > 0) + bias,
-            c * (c > 0) + bias)
+    return (pixel_vals * (pixel_vals > 0) + bias,)
 
 def sigmoid(pixel_vals, bias=0):
     '''returns sigmoid activation of a pixel
     bias 0'ed out by default'''
-    a, b, c = pixel_vals
-    return (1/(1+np.exp(-a)) + bias,
-            1/(1+np.exp(-b)) + bias,
-            1/(1+np.exp(-c)) + bias, )
+    return (1/(1+np.exp(-pixel_vals)) + bias)
 
 def tanh(pixel_vals, bias=0):
     '''returns hyperbolic tan of a tuple of pixel_vals
     bias 0'ed out by default'''
-    a, b, c = pixel_vals
-    return (np.tanh(a) + bias,
-            np.tanh(b) + bias,
-            np.tanh(c) + bias)
+    return (np.tanh(pixel_vals) + bias)
