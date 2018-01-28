@@ -103,3 +103,6 @@ ENV/
 
 # datasets
 data_sets/
+
+.*.swp
+.*.swo
