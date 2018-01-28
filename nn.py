@@ -231,7 +231,7 @@ for filename in glob.glob('test_ds/train/*.jpeg'):
     drs.append(dr)
     im = Image.open(filename, 'r')
     new_width, new_height = size
-    im = im.resize((new_width, new_height), Image.ANTIALIAS)
+    im = im.resize((720, 720), Image.ANTIALIAS)
     px_vals = list(im.getdata())
     d[index] = pd.Series([(x[0], x[1], x[2]) for x in px_vals])
     index += 1
@@ -239,7 +239,7 @@ print("Finished parsing files")
 s = pd.DataFrame(d)
 s = s.transpose()
 print("Drs here: " + str(drs))
-s.insert(15054336, 'drs', drs)
+s.insert(720 * 720, 'dr', drs)
     
 n_ins = s.columns.values[len(s.columns.values) - 2] + 1
 layers = backpropagation(s, 0.1, n_ins, 5, 10)
