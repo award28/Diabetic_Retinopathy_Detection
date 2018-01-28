@@ -64,6 +64,7 @@ def cost(predicted, actual):
         rv += (p - a)**2
     return rv
 
+
 def backpropagation(df, learning_rate, n_inputs, n_outputs, n_hidden, n_layers=2):
     layers = []
     # Make neurons for each layer
@@ -160,7 +161,45 @@ def backpropagation(df, learning_rate, n_inputs, n_outputs, n_hidden, n_layers=2
                 change = learning_rate * delta * n.get_val()
                 neuron.get_prev_layer()[n] += change
                 n.get_next_layer()[neuron] += change
+
+    return layers
         
+def predict(layers, df):
+    for idx, row in df.iterrows():
+        for i, neuron in zip(range(row.count() - 1), layers[0]):
+            neuron.set_val(RGB_to_int(*row[i]))
+            print(neuron.get_val())
+    
+        for neuron in layers[1]:
+            sigmoid_ = 0
+            for n, weight in neuron.get_prev_layer().items():
+                sigmoid_ += n.get_val()*weight
+            print(sigmoid(sigmoid_, 10))
+            neuron.set_val(sigmoid(sigmoid_, 10))
+
+        for neuron in layers[2]:
+            sigmoid_ = 0
+            for n, weight in neuron.get_prev_layer().items():
+                sigmoid_ += n.get_val()*weight
+            print(sigmoid(sigmoid_, 10))
+            neuron.set_val(sigmoid(sigmoid_, 10))
+
+        highest, val = -1, 0
+        i = 0
+        for neuron in layers[3]:
+            sigmoid_ = 0
+            for n, weight in neuron.get_prev_layer().items():
+                sigmoid_ += n.get_val()*weight
+            observed = sigmoid(sigmoid_, 10)
+            if observed > highest:
+                highest = observed
+                val = i
+            i += 1
+
+        print("Prediction: " + str(val))
+        print("Actual: " + str(row["dr"]))
+        
+
 
 d = {
         1 : pd.Series([(255., 0., 50.), (0, 0, 255,), (20,20,20), (230, 5, 67)]),
@@ -172,4 +211,6 @@ s = s.transpose()
 s["dr"] = [1,2, 0]
 
 n_ins = s.columns.values[len(s.columns.values) - 2] + 1
-backpropagation(s, 0.1, n_ins, 5, 10)
+layers = backpropagation(s, 0.1, n_ins, 5, 10)
+
+predict(layers, s)
