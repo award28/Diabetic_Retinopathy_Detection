@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+  <title>Starter Template - Materialize</title>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.css" />
+  <style media="screen">
+  .icon-block {
+    padding: 0 15px;
+    }
+    .icon-block .material-icons {
+    font-size: inherit;
+    }
+    #index-banner {
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <nav class="light-blue lighten-1" role="navigation">
+    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo"></a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="#">Navbar Link</a></li>
+      </ul>
+
+      <ul id="nav-mobile" class="side-nav">
+        <li><a href="#"></a></li>
+      </ul>
+      <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+    </div>
+  </nav>
+  <div class="section no-pad-bot" id="index-banner">
+    <div class="container">
+      <br><br>
+      <h1 class="header center orange-text">Analyze your spectral Iris data for Diabetic Retinopathy</h1>
+      <div class="row center">
+        <h5 class="header col s12 light">Not using an ML library</h5>
+      </div>
+      <div class="row center">
+        <a href="http://materializecss.com/getting-started.html" id="download-button" class="btn-large waves-effect waves-light orange">Get Started</a>
+      </div>
+      <br><br>
+    </div>
+  </div>
+  <div class="container">
+    <div class="section">
+
+      <!--   Icon Section   -->
+      <div class="row">
+        <div class="col s12 m4 center">
+          <div class="icon-block">
+            <h5 class="center">No Diabetic Risk</h5>
+            <img class="center" style="width:80%" src="https://image.ibb.co/fBmgdb/10_left.jpg" alt="">
+
+
+          </div>
+        </div>
+
+        <div class="col s12 m4 center">
+          <div class="icon-block">
+            <h5 class="center">Moderate Diabetic Risk</h5>
+            note:  40 left is a 2
+            <img class="center" style="width:80%" src="https://image.ibb.co/fBmgdb/10_left.jpg" alt="">
+
+          </div>
+        </div>
+
+        <div class="col s12 m4 center">
+          <div class="icon-block">
+            <h5 class="center">Severe Diabetic Risk</h5>
+            note: 217_right is a 4
+            <img class="center" style="width:80%" src="https://image.ibb.co/fBmgdb/10_left.jpg" alt="">
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <br><br>
+  </div>
+  <div class="section">
+    <div class="col s12">
+      <form id="img_submit" action="{% url 'scan' %}" style="display:inline" method="POST">
+        {% csrf_token %}
+        <div class="file-field input-field" style="width:80%">
+          <div class="btn">
+            <span>Upload</span>
+            <input type="file">
+          </div>
+          <div class="file-path-wrapper">
+            <input class="file-path validate" type="text">
+          </div>
+        </div>
+        <div class="btn" onclick="$('#img_submit').submit()">
+          Analyze
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+
+
+
+
+
+
+  <!--  Scripts-->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+  <script type="text/javascript">
+  (function($){
+    $(function(){
+
+      $('.button-collapse').sideNav();
+
+    });
+})(jQuery);
+  </script>
+
+  </body>
+</html>
