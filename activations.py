@@ -11,7 +11,7 @@ def relu(pixel_vals, bias=0):
 def sigmoid(pixel_vals, bias=0):
     '''returns sigmoid activation of a pixel
     bias 0'ed out by default'''
-    return (1/(1+np.exp(-pixel_vals)) + bias)
+    return (1/(1+np.exp(-pixel_vals) + bias))
 
 def tanh(pixel_vals, bias=0):
     '''returns hyperbolic tan of a tuple of pixel_vals

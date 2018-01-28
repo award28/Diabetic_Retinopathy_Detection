@@ -1,6 +1,7 @@
 import random
 import pandas as pd
 import numpy as np
+from activations import sigmoid
 
 
 class Nueron(object):
@@ -38,6 +39,16 @@ class Nueron(object):
         return self.prev_layer
 
 
+def RGB_to_int(r, g, b):
+    return r*(256**2) + g*256 + b
+
+
+def int_to_RGB(num):
+    r = num//(256**2)
+    g = (num//256) % 256
+    b = num % 256
+    return (r, g, b)
+
 
 def backpropagation(df, learning_rate, n_inputs, n_outputs, n_hidden, n_layers=2):
     layers = []
@@ -52,6 +63,9 @@ def backpropagation(df, learning_rate, n_inputs, n_outputs, n_hidden, n_layers=2
             neuron = Nueron(0)
             layers[i].append(neuron)
 
+    for i, neuron in zip(range(len(layers)), layers[len(layers) - 1]):
+        neuron.set_val(i)
+
     for i in range(len(layers) - 1):
         for neuron in layers[i]:
             neuron.set_next_layer(layers[i + 1])
@@ -60,12 +74,52 @@ def backpropagation(df, learning_rate, n_inputs, n_outputs, n_hidden, n_layers=2
         for neuron in layers[i]:
             neuron.set_prev_layer(layers[i - 1])
 
+    for idx, row in df.iterrows():
+        print("*******FIRST LAYER*********")
+        for i, neuron in zip(range(row.count() - 1), layers[0]):
+            neuron.set_val(RGB_to_int(*row[i]))
+            print(neuron.get_val())
+    
+        print("*******SECOND LAYER*********")
+        for neuron in layers[1]:
+            sigmoid_ = 0
+            for n, weight in neuron.get_prev_layer().items():
+                sigmoid_ += n.get_val()*weight
+            print(sigmoid(sigmoid_, 10))
+            neuron.set_val(sigmoid(sigmoid_, 10))
+
+        print("*******THIRD LAYER*********")
+        for neuron in layers[2]:
+            sigmoid_ = 0
+            for n, weight in neuron.get_prev_layer().items():
+                sigmoid_ += n.get_val()*weight
+            print(sigmoid(sigmoid_, 10))
+            neuron.set_val(sigmoid(sigmoid_, 10))
+
+        print("*******FINAL LAYER*********")
+        highest, dr = -1, 0
+        idx = 0
+        for neuron in layers[3]:
+            sigmoid_ = 0
+            for n, weight in neuron.get_prev_layer().items():
+                sigmoid_ += n.get_val()*weight
+            if sigmoid(sigmoid_, 10) > highest:
+                dr = idx
+            idx += 1
+        print("Network predicted: " + str(dr))
+        print("Actual: " + str(row["dr"]))
+
+        # ****** Update the weights via stochastic gradient decent ******
+
 
 d = {
-        1 : pd.Series([(255., 0., 50.), (0, 0, 255,), (20,20,20)]),
-        2 : pd.Series([(0,0,255), (0,3,4), (0,0,0)]),
+        1 : pd.Series([(255., 0., 50.), (0, 0, 255,), (20,20,20), (230, 5, 67)]),
+        2 : pd.Series([(0,0,255), (0,3,4), (0,0,0), (23, 85, 6)]),
+        3 : pd.Series([(88,9,71), (128,115,169), (102,71,133), (33,55,152)]),
         }
 s = pd.DataFrame(d)
-s["dr"] = [1,2,3]
+s = s.transpose()
+s["dr"] = [1,2, 0]
 
-backpropagation(s, 0.1, len(s.columns), 5, 10)
+n_ins = s.columns.values[len(s.columns.values) - 2] + 1
+backpropagation(s, 0.1, n_ins, 5, 10)
