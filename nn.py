@@ -96,14 +96,12 @@ def backpropagation(df, learning_rate, n_inputs, n_outputs, n_hidden, n_layers=2
              print("*******FIRST LAYER*********")
              for i, neuron in zip(range(row.count() - 1), layers[0]):
                  neuron.set_val(RGB_to_int(*row[i]))
-                 print(neuron.get_val())
          
              print("*******SECOND LAYER*********")
              for neuron in layers[1]:
                  sigmoid_ = 0
                  for n, weight in neuron.get_prev_layer().items():
                      sigmoid_ += n.get_val()*weight
-                 print(sigmoid(sigmoid_, 2))
                  neuron.set_val(sigmoid(sigmoid_, 2))
 
              print("*******THIRD LAYER*********")
@@ -111,7 +109,6 @@ def backpropagation(df, learning_rate, n_inputs, n_outputs, n_hidden, n_layers=2
                  sigmoid_ = 0
                  for n, weight in neuron.get_prev_layer().items():
                      sigmoid_ += n.get_val()*weight
-                 print(sigmoid(sigmoid_, 2))
                  neuron.set_val(sigmoid(sigmoid_, 2))
 
              predicted = []
@@ -216,45 +213,34 @@ layers = backpropagation(s, 0.1, n_ins, 5, 10)
 predict(layers, s)
 '''
 
-try:
-    with open('mypickle.pickle') as f:
-        in_df = pickle.load(f)
-except:
-    data = pd.DataFrame()
-    size = 0, 0
-    for filename in glob.glob('test_ds/train/*.jpeg'):
-        im = Image.open(filename, 'r')
-        width, height = im.size
-        if (im.size > size):
-            size = width, height
+data = pd.DataFrame()
+size = 0, 0
+for filename in glob.glob('test_ds/train/*.jpeg'):
+    im = Image.open(filename, 'r')
+    width, height = im.size
+    if (im.size > size):
+        size = width, height
 
-    data = pd.read_csv('./test_ds/labels.csv')
-    index = 1
-    d = {}
-    drs = []
-    for filename in glob.glob('test_ds/train/*.jpeg'):
-        name = filename.split('/')[-1].split('.')[0]
-        print(name)
-        dr = get_class_for_img(name, data) 
-        drs.append(dr)
-        im = Image.open(filename, 'r')
-        new_width, new_height = size
-        im = im.resize((new_width, new_height), Image.ANTIALIAS)
-        px_vals = list(im.getdata())
-        d[index] = pd.Series([(x[0], x[1], x[2]) for x in px_vals])
-        index += 1
-    print("Finished parsing files") 
-    s = pd.DataFrame(d)
-    s = s.transpose()
-    print("Drs here: " + str(drs))
-    s.insert(15054336, 'drs', drs)
+data = pd.read_csv('./test_ds/labels.csv')
+index = 1
+d = {}
+drs = []
+for filename in glob.glob('test_ds/train/*.jpeg'):
+    name = filename.split('/')[-1].split('.')[0]
+    dr = get_class_for_img(name, data) 
+    drs.append(dr)
+    im = Image.open(filename, 'r')
+    new_width, new_height = size
+    im = im.resize((new_width, new_height), Image.ANTIALIAS)
+    px_vals = list(im.getdata())
+    d[index] = pd.Series([(x[0], x[1], x[2]) for x in px_vals])
+    index += 1
+print("Finished parsing files") 
+s = pd.DataFrame(d)
+s = s.transpose()
+print("Drs here: " + str(drs))
+s.insert(15054336, 'drs', drs)
     
-    try:
-        with open('mypickle.pickle', 'wb') as f:
-            pickle.dump(s, f)
-            print("---------------------File saved---------------------")
-    except:
-        print("Could not save pickle")
 n_ins = s.columns.values[len(s.columns.values) - 2] + 1
 layers = backpropagation(s, 0.1, n_ins, 5, 10)
 predict(layers, s)
