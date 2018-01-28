@@ -91,7 +91,7 @@ def backpropagation(df, learning_rate, n_inputs, n_outputs, n_hidden, n_layers=2
         for neuron in layers[i]:
             neuron.set_prev_layer(layers[i - 1])
 
-    for i in range(1000):
+    for i in range(10):
         for idx, row in df.iterrows():
              print("*******FIRST LAYER*********")
              for i, neuron in zip(range(row.count() - 1), layers[0]):
