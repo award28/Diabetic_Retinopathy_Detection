@@ -47,10 +47,47 @@
       <br><br>
     </div>
   </div>
+  <div class="container">
+    <div class="section">
+
+      <!--   Icon Section   -->
+      <div class="row">
+        <div class="col s12 m4 center">
+          <div class="icon-block">
+            <h5 class="center">No Diabetic Risk</h5>
+            <img class="center" style="width:80%" src="https://image.ibb.co/fBmgdb/10_left.jpg" alt="">
+
+
+          </div>
+        </div>
+
+        <div class="col s12 m4 center">
+          <div class="icon-block">
+            <h5 class="center">Moderate Diabetic Risk</h5>
+            note:  40 left is a 2
+            <img class="center" style="width:80%" src="https://image.ibb.co/fBmgdb/10_left.jpg" alt="">
+
+          </div>
+        </div>
+
+        <div class="col s12 m4 center">
+          <div class="icon-block">
+            <h5 class="center">Severe Diabetic Risk</h5>
+            note: 217_right is a 4
+            <img class="center" style="width:80%" src="https://image.ibb.co/fBmgdb/10_left.jpg" alt="">
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <br><br>
+  </div>
   <div class="section">
     <div class="col s12">
-      <form action="{% url 'scan' %}">
-        <div class="file-field input-field">
+      <form id="img_submit" action="{% url 'scan' %}" style="display:inline" method="POST">
+        {% csrf_token %}
+        <div class="file-field input-field" style="width:80%">
           <div class="btn">
             <span>Upload</span>
             <input type="file">
@@ -58,6 +95,9 @@
           <div class="file-path-wrapper">
             <input class="file-path validate" type="text">
           </div>
+        </div>
+        <div class="btn" onclick="$('#img_submit').submit()">
+          Analyze
         </div>
       </form>
 
