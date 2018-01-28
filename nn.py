@@ -19,6 +19,14 @@ class Nueron(object):
         return self.val
 
 
+    def set_target_val(self, val):
+        self.t_val = val
+
+
+    def get_target_val(self):
+        return self.t_val
+
+
     def set_next_layer(self, neurons):
         for neuron in neurons:
             weight = random.uniform(-0.05, 0.05)
@@ -49,6 +57,12 @@ def int_to_RGB(num):
     b = num % 256
     return (r, g, b)
 
+
+def cost(predicted, actual):
+    rv = 0
+    for p, a in zip(predicted, actual):
+        rv += (p - a)**2
+    return rv
 
 def backpropagation(df, learning_rate, n_inputs, n_outputs, n_hidden, n_layers=2):
     layers = []
@@ -96,21 +110,57 @@ def backpropagation(df, learning_rate, n_inputs, n_outputs, n_hidden, n_layers=2
             print(sigmoid(sigmoid_, 10))
             neuron.set_val(sigmoid(sigmoid_, 10))
 
-        print("*******FINAL LAYER*********")
-        highest, dr = -1, 0
+        predicted = []
+        actual = []
+        outputs = []
         idx = 0
         for neuron in layers[3]:
             sigmoid_ = 0
             for n, weight in neuron.get_prev_layer().items():
                 sigmoid_ += n.get_val()*weight
-            if sigmoid(sigmoid_, 10) > highest:
-                dr = idx
+            observed = sigmoid(sigmoid_, 10)
+            target = int(row["dr"] == idx)
+            # ****** Update the weights via stochastic gradient decent ******
+            # eta * (target - observed) * observed(1 - observed) * (previous neuron value)
+            delta = observed * (target - observed) * (1 - observed)
+            outputs.append((neuron, delta))
+            for n in neuron.get_prev_layer().keys():
+                change = learning_rate * delta * n.get_val()
+                neuron.get_prev_layer()[n] += change
+                n.get_next_layer()[neuron] += change
             idx += 1
-        print("Network predicted: " + str(dr))
-        print("Actual: " + str(row["dr"]))
+        
+        next_outputs = []
+        for neuron in layers[2]:
+            sigmoid_ = 0
+            for n, weight in neuron.get_prev_layer().items():
+                sigmoid_ += n.get_val()*weight
+            observed = sigmoid(sigmoid_, 10)
+            out_sum = 0
+            for n, d in outputs:
+                out_sum = neuron.get_next_layer()[n] * d
+            delta = observed * (1 - observed) * out_sum
+            next_outputs.append((neuron, delta))
+            for n in neuron.get_prev_layer().keys():
+                change = learning_rate * delta * n.get_val()
+                neuron.get_prev_layer()[n] += change
+                n.get_next_layer()[neuron] += change
+              
 
-        # ****** Update the weights via stochastic gradient decent ******
-
+        for neuron in layers[1]:
+            sigmoid_ = 0
+            for n, weight in neuron.get_prev_layer().items():
+                sigmoid_ += n.get_val()*weight
+            observed = sigmoid(sigmoid_, 10)
+            out_sum = 0
+            for n, d in next_outputs:
+                out_sum = neuron.get_next_layer()[n] * d
+            delta = observed * (1 - observed) * out_sum
+            for n in neuron.get_prev_layer().keys():
+                change = learning_rate * delta * n.get_val()
+                neuron.get_prev_layer()[n] += change
+                n.get_next_layer()[neuron] += change
+        
 
 d = {
         1 : pd.Series([(255., 0., 50.), (0, 0, 255,), (20,20,20), (230, 5, 67)]),
