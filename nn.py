@@ -91,7 +91,8 @@ def backpropagation(df, learning_rate, n_inputs, n_outputs, n_hidden, n_layers=2
         for neuron in layers[i]:
             neuron.set_prev_layer(layers[i - 1])
 
-    for i in range(10):
+    for i in range(1, 100):
+        print("################### ITERATION " + str(i) + " #######################")
         for idx, row in df.iterrows():
              print("*******FIRST LAYER*********")
              for i, neuron in zip(range(row.count() - 1), layers[0]):
@@ -116,14 +117,23 @@ def backpropagation(df, learning_rate, n_inputs, n_outputs, n_hidden, n_layers=2
              outputs = []
              idx = 0
              for neuron in layers[3]:
+                 actual.append(int(row["dr"] == idx))
+                 idx += 1
+
+             idx = 0
+             for neuron in layers[3]:
                  sigmoid_ = 0
                  for n, weight in neuron.get_prev_layer().items():
                      sigmoid_ += n.get_val()*weight
                  observed = sigmoid(sigmoid_, 2)
                  target = int(row["dr"] == idx)
                  # ****** Update the weights via stochastic gradient decent ******
+
                  # eta * (target - observed) * observed(1 - observed) * (previous neuron value)
-                 delta = observed * (target - observed) * (1 - observed)
+                 delta = 0
+                 for n in layers[3]:
+                     delta += (target - observed) ** 2
+                 # delta = observed * (target - observed) * (1 - observed) 
                  outputs.append((neuron, delta))
                  for n in neuron.get_prev_layer().keys():
                      change = learning_rate * delta * n.get_val()
